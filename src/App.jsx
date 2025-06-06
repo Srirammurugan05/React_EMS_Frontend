@@ -7,18 +7,21 @@ import AddEmployeeComponent from './components/AddEmployeeComponent'
 
 function App() {
   return (
-    
-    <div>
     <BrowserRouter>
+    <div className="d-flex flex-column vh-100">
     <HeaderComponent/>
+    <div className="flex-grow-1 overflow-auto px-4 py-3 bg-light">
         <Routes>
       <Route path='/' element = { <ListEmployeeComponent/>}></Route>
       <Route path='/employees' element = { <ListEmployeeComponent/>}></Route>
       <Route path='/add-employee' element  = { <AddEmployeeComponent/>}></Route> 
+      <Route path='/edit-employee/:id' element  = { <AddEmployeeComponent/>}></Route> 
     </Routes>
-    <FooterComponent/>
-   </BrowserRouter>
+    
    </div>
+   <FooterComponent/>
+   </div>
+   </BrowserRouter>
   )
 }
 
