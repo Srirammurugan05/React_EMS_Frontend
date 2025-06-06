@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { createEmployee } from '../services/EmployeeService';
-import  { useNavigate } from 'react-router-dom' ; 
+import React, { useEffect, useState } from 'react'
+import { createEmployee, getEmployeeById, updateEmployeeById } from '../services/EmployeeService';
+import  { useNavigate , useParams } from 'react-router-dom' ; 
 
 const AddEmployeeComponent = () => {
 
@@ -13,6 +13,31 @@ const AddEmployeeComponent = () => {
     lastName :'',
     email :''
   })
+   
+  const {id} = useParams()
+  
+    useEffect(() => {
+       
+      if(id){
+       
+        getEmployeeById(id).then((response) => 
+           {
+              
+            setfirstName(response.data.firstName);
+            setlastName(response.data.lastName);
+            setEmail(response.data.email);
+
+           }
+      ).catch(error => {
+        console.error(error)
+      })
+
+      }
+      
+
+    } , [id])
+
+      
 
   function validForm() {
     
@@ -60,30 +85,46 @@ const AddEmployeeComponent = () => {
 
   }
   
+  
+  function pageTitile(){
+    
+  return id ?  <h2 className='text-center'>Update Employee</h2> :  <h2 className='text-center'>Add Employee</h2>
+  
+  }
 
-  function saveEmployee (e){
+  function saveOrUpdateEmployee (e){
     e.preventDefault()
 
     if(validForm()){
     const employee  = {firstName , lastName ,email}
     console.log(employee);
-    
+
+    if(id){
+      
+      updateEmployeeById(employee ,id).then(response => {
+        console.log(response.data);
+        navigator("/employees");
+      }).catch(error => {
+        console.error(error);
+      })
+
+    }else {
     createEmployee(employee).then( (response) => {
       console.log(response.data)
       navigator("/employees")
 
     })
   }
-
   }
 
+  }
 
   return (
     <div className='container'>
       <br/>
       <div className='row'>
         <div className='card col-md-6 offset-md-3 offset-md-3'>
-          <h2 className='text-center'> Add Employee</h2>
+          {pageTitile()}
           <div className='card-body'> 
             
             <form>
@@ -127,7 +168,7 @@ const AddEmployeeComponent = () => {
                  {errors.email && <div className="invalid-feedback"> {errors.email}</div> }  
               </div>
                
-               <button className='btn btn-success' onClick={saveEmployee}>Submit</button>
+               <button className='btn btn-success' onClick={saveOrUpdateEmployee}>Submit</button>
 
             </form>
 
